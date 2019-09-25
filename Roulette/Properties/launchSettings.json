@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Roulette": {
+      "commandName": "Project",
+      "commandLineArgs": "test 1-3-2-6 1000"
+    }
+  }
+}
