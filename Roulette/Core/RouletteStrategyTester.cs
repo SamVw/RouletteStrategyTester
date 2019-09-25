@@ -22,7 +22,7 @@ namespace Roulette.Core
         private readonly IStatisticsManager _statisticsManager;
         private readonly ILogger _logger;
 
-        public RouletteStrategyTester(RouletteStrategySimulator simulator, Visualizer visualizer, UserInputManager userInputManager, StatisticsManager statisticsManager, ILogger logger)
+        public RouletteStrategyTester(IRouletteStrategySimulator simulator, IVisualizer visualizer, IUserInputManager userInputManager, IStatisticsManager statisticsManager, ILogger logger)
         {
             _simulator = simulator;
             _visualizer = visualizer;

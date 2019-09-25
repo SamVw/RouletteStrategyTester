@@ -19,8 +19,13 @@ namespace Roulette.Core.Simulator
 
         public void UseLimitedRouletteGame(int min, int max)
         {
-            _rouletteGame = new LimitedRoulette(new Wheel(), new MockTableLoader());
+            UseRouletteGame();
             _rouletteGame.SetLimits(min, max);
+        }
+
+        public void UseRouletteGame()
+        {
+            _rouletteGame = new LimitedRoulette(new Wheel(), new MockTableLoader());
         }
     }
 }

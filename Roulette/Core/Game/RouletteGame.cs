@@ -33,12 +33,9 @@ namespace Roulette.Core.Game
         public virtual double PlaceBetAndSpin(Bet b)
         {
             int result = _wheel.Spin();
-
             Pocket pocket = _rouletteTable.GetPocket(result);
 
-            double winnings = b.CalculateWinnings(pocket);
-
-            return winnings;
+            return b.CalculateWinnings(pocket);
         }
     }
 }
