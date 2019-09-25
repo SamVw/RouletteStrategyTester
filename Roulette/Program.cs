@@ -16,52 +16,24 @@ namespace Roulette
     {
         static int Main(string[] args)
         {
-            if (args.Length < 3)
-            {
-                System.Console.WriteLine("Please enter the correct format.");
-                System.Console.WriteLine("Usage: Roulette <PlayerName> <BettingStrategy> <NumberOfCycles>");
-                return 1;
-            }
+            CreatingServices(out var rouletteStrategyTester);
 
-            string name = args[0];
-            string strategy = args[1];
-            bool test = int.TryParse(args[2], out int cycles);
-            if (!test && cycles <= 1000)
-            {
-                System.Console.WriteLine("Please enter the correct format.");
-                System.Console.WriteLine("Usage: Roulette <PlayerName> <BettingStrategy> <NumberOfCycles>");
-                return 1;
-            }
-
-            var reader = CreatingServices(out var gameManager);
-
-            try
-            {
-                gameManager.TestStrategy(strategy, cycles);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            reader.Read();
+            rouletteStrategyTester.Test(args);
 
             return 0;
         }
 
-        private static ConsoleReader CreatingServices(out GameManager gameManager)
+        private static void CreatingServices(out RouletteStrategyTester rouletteStrategyTester)
         {
             ConsoleLogger logger = new ConsoleLogger();
             ConsoleReader reader = new ConsoleReader();
 
-            Wheel wheel = new Wheel();
-            MockTableLoader mockTableLoader = new MockTableLoader();
-            LimitedRoulette game = new LimitedRoulette(wheel, mockTableLoader, 10);
-            var simulator = new RouletteStrategySimulator(game);
+            RouletteStrategySimulator simulator = new RouletteStrategySimulator();
+            UserInputManager userInputManager = new UserInputManager(logger, reader);
+            StatisticsManager statisticsManager = new StatisticsManager();
+            Visualizer visualizer = new Visualizer(logger);
 
-            var visualizer = new Visualizer(logger);
-            gameManager = new GameManager(simulator, visualizer, reader);
-            return reader;
+            rouletteStrategyTester = new RouletteStrategyTester(simulator, visualizer, userInputManager, statisticsManager, logger);
         }
     }
 }

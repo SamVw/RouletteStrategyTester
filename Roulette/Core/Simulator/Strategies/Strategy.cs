@@ -17,6 +17,20 @@ namespace Roulette.Core.Simulator.Strategies
             Cycles = cycles;
         }
 
-        public abstract StrategyResult Execute(IRouletteGame rouletteGame, Player player, double betStartAmount);
+        public abstract StrategyResult Execute(RouletteGame rouletteGame, Player player, double betStartAmount);
+
+        protected void CollectStats(double bet, List<double> bets, ref double maxBet, ref double minBet)
+        {
+            bets.Add(bet);
+            if (bet > maxBet)
+            {
+                maxBet = bet;
+            }
+
+            if (bet < minBet)
+            {
+                minBet = bet;
+            }
+        }
     }
 }

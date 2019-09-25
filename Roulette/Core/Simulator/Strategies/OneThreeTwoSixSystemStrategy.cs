@@ -20,16 +20,20 @@ namespace Roulette.Core.Simulator.Strategies
         {
         }
 
-        public override StrategyResult Execute(IRouletteGame rouletteGame, Player player, double betStartAmount)
+        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, double betStartAmount)
         {
             _w = betStartAmount;
             _d = 0;
+            double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget;
+            List<double> bets = new List<double>();
 
-            for(int i = 0; i < Cycles; i++)
+            for (int i = 0; i < Cycles; i++)
             {
                 Bet bet = new ColorBet(_w, PocketColor.Red);
                 double result = rouletteGame.PlaceBetAndSpin(bet);
                 player.Budget += result;
+
+                CollectStats(_w, bets, ref maxBet, ref minBet);
 
                 bool loss = result < 0;
                 if (loss)
@@ -46,7 +50,13 @@ namespace Roulette.Core.Simulator.Strategies
 
             return new StrategyResult()
             {
-                EndBudget = player.Budget
+                EndBudget = player.Budget,
+                Strategy = "1-3-2-6",
+                CyclesRan = Cycles,
+                MaxBet = maxBet,
+                MinBet = minBet,
+                AllBets = bets,
+                StartBudget = startBudget
             };
         }
 

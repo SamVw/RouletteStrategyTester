@@ -18,14 +18,22 @@ namespace Roulette.UI
         }
 
 
-        public void ShowStatistics(List<StrategyStatistic> strategyStatistics)
+        public void ShowStatistics(List<StrategyStatistics> strategyStatistics)
         {
             StringBuilder builder = new StringBuilder();
 
             foreach (var strategyStatistic in strategyStatistics)
             {
                 builder.AppendLine("Strategy: " + strategyStatistic.Strategy + " | " + strategyStatistic.Cycles + " cycles");
-                builder.AppendLine(" - End result: " + strategyStatistic.EndResult);
+                builder.AppendLine(" Start budget\t =>\t" + strategyStatistic.StartBudget + " dollars");
+                builder.AppendLine(" End budget\t =>\t" + strategyStatistic.EndBudget + " dollars");
+                builder.AppendLine(" Amount " + (strategyStatistic.EndBalance > 0 ? "Won" : "Lost") + "\t =>\t" + strategyStatistic.EndBalance + " dollars");
+                builder.AppendLine();
+                builder.AppendLine(" Max bet\t =>\t" + strategyStatistic.MaxBet);
+                builder.AppendLine(" Min bet\t =>\t" + strategyStatistic.MinBet);
+                builder.AppendLine();
+                builder.AppendLine(" Average bet\t =>\t" + strategyStatistic.Average);
+                builder.AppendLine(" Median bet\t =>\t" + strategyStatistic.Median);
             }
 
             _logger.Log(builder.ToString());

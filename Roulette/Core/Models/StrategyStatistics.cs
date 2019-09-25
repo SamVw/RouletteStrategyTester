@@ -6,20 +6,24 @@ using System.Threading.Tasks;
 
 namespace Roulette.Core.Models
 {
-    public class StrategyResult
+    public class StrategyStatistics
     {
-        public double EndBudget { get; set; }
+        public int Cycles { get; set; }
 
         public string Strategy { get; set; }
 
-        public int CyclesRan { get; set; }
+        public double EndBudget { get; set; }
+
+        public double Average { get; set; }
+
+        public double Median { get; set; }
 
         public double MaxBet { get; set; }
 
         public double MinBet { get; set; }
 
-        public List<double> AllBets { get; set; }
-
         public double StartBudget { get; set; }
+
+        public double EndBalance { get; set; }
     }
 }

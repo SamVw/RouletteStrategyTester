@@ -9,7 +9,7 @@ namespace Roulette.Core.Game
 
         private const int MIN = -1;
 
-        private Random _random = new Random();
+        private readonly Random _random = new Random();
 
         public int Spin()
         {

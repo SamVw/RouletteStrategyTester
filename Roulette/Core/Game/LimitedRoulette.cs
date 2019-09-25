@@ -10,23 +10,31 @@ namespace Roulette.Core.Game
 {
     public class LimitedRoulette : RouletteGame
     {
-        private readonly int _maxBid;
-        private const int TableLimitMultiplier = 100;
+        private int _minBid;
+        private int _maxBid;
 
-        public LimitedRoulette(IWheel wheel, ITableLoader tableLoader, int maxBid) : base(wheel, tableLoader)
+        public LimitedRoulette(IWheel wheel, ITableLoader tableLoader) : base(wheel, tableLoader)
         {
-            _maxBid = maxBid;
         }
 
         public override double PlaceBetAndSpin(Bet b)
         {
-            var tableLimit = _maxBid * TableLimitMultiplier;
-            if (b.Amount > tableLimit)
+            if (b.Amount > _maxBid)
             {
-                b.Amount = tableLimit + 0.0;
+                b.Amount = _maxBid + 0.0;
+            }
+            if (b.Amount <= _minBid)
+            {
+                b.Amount = _minBid;
             }
 
             return base.PlaceBetAndSpin(b);
+        }
+
+        public void SetLimits(int minBid, int maxBid)
+        {
+            _minBid = minBid;
+            _maxBid = maxBid;
         }
     }
 }

@@ -23,8 +23,12 @@ namespace Roulette.Core.Factories
             {
                 return new OneThreeTwoSixSystemStrategy(cycles);
             }
+            else if (type == "Cancellation")
+            {
+                return new CancellationStrategy(cycles);
+            }
 
-            throw new ArgumentException("Not a valid strategy name ('Martingale' - 'Waiting' - '1-3-2-6')");
+            throw new ArgumentException("Not a valid strategy name ('Martingale' - 'Waiting' - '1-3-2-6' - 'Cancellation')");
         }
     }
 }

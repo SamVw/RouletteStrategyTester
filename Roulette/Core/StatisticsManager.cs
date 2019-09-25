@@ -3,32 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Roulette.Core.Game.Bets;
 using Roulette.Core.Models;
 
 namespace Roulette.Core
 {
-    public class StatisticsManager
+    public class StatisticsManager : IStatisticsManager
     {
-        public Dictionary<string, StrategyStatistic> _strategyResults;
+        private readonly Dictionary<string, StrategyStatistics> _strategyResults;
 
         public StatisticsManager()
         {
-            _strategyResults = new Dictionary<string, StrategyStatistic>();
+            _strategyResults = new Dictionary<string, StrategyStatistics>();
         }
 
-        public void Process(StrategyResult result, string type, int cycles)
+        public void Process(StrategyResult result)
         {
-            if (!_strategyResults.ContainsKey(type))
+            var statistic = new StrategyStatistics()
             {
-                _strategyResults.Add(type, new StrategyStatistic());
+                Cycles = result.CyclesRan,
+                Strategy = result.Strategy,
+                EndBudget = result.EndBudget,
+                MaxBet = result.MaxBet,
+                MinBet = result.MinBet,
+                Average = result.AllBets.Average(),
+                Median = GetMedian(result.AllBets),
+                StartBudget = result.StartBudget,
+                EndBalance = result.EndBudget - result.StartBudget
+            };
+
+            if (!_strategyResults.ContainsKey(result.Strategy))
+            {
+                _strategyResults.Add(result.Strategy, new StrategyStatistics());
             }
 
-            _strategyResults[type].Cycles = cycles;
-            _strategyResults[type].Strategy = type;
-            _strategyResults[type].EndResult = result.EndBudget;
+            _strategyResults[result.Strategy] = statistic;
         }
 
-        public List<StrategyStatistic> GetStatistics()
+        private double GetMedian(List<double> bets)
+        {
+            var orderedBets = bets.OrderBy(b => b).ToList();
+            return orderedBets[(int)(orderedBets.Count / 2)];
+        }
+
+        public List<StrategyStatistics> GetStatistics()
         {
             return _strategyResults.Values.ToList();
         }

@@ -9,6 +9,6 @@ namespace Roulette.Core.Interfaces
 {
     public interface IVisualizer
     {
-        void ShowStatistics(List<StrategyStatistic> strategyStatistics);
+        void ShowStatistics(List<StrategyStatistics> strategyStatistics);
     }
 }

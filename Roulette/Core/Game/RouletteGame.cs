@@ -7,7 +7,7 @@ using Roulette.Core.Interfaces;
 
 namespace Roulette.Core.Game
 {
-    public abstract class RouletteGame : IRouletteGame
+    public class RouletteGame
     {
         private readonly IWheel _wheel;
         private readonly ITableLoader _tableLoader;
@@ -19,7 +19,6 @@ namespace Roulette.Core.Game
             _wheel = wheel;
             _tableLoader = tableLoader;
             
-
             LoadTable();
         }
 
