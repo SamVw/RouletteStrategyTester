@@ -10,6 +10,6 @@ namespace Roulette.Core.Interfaces
 {
     public interface ITableLoader
     {
-        List<Pocket> Load(string path);
+        RouletteTable Load(string path);
     }
 }

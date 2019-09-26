@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Roulette.Core.Factories;
+using Roulette.Core.Game.Table;
 using Roulette.Core.Game.Table.Pockets;
 using Roulette.Core.Interfaces;
 
@@ -11,7 +12,7 @@ namespace Roulette.Infrastructure.Loaders
 {
     public class TxtTableLoader : ITableLoader
     {
-        public List<Pocket> Load(string path)
+        public RouletteTable Load(string path)
         {
             List<Pocket> pockets = new List<Pocket>();
 
@@ -30,7 +31,7 @@ namespace Roulette.Infrastructure.Loaders
                 }
             }
 
-            return pockets;
+            return new RouletteTable(pockets);
         }
     }
 }

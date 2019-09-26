@@ -24,8 +24,7 @@ namespace Roulette.Core.Game
 
         public void LoadTable()
         {
-            List<Pocket> pockets = _tableLoader.Load(@"./Assets/RouletteTable.txt");
-            _rouletteTable = new RouletteTable(pockets);
+            _rouletteTable = _tableLoader.Load(@"./Assets/RouletteTable.txt");
         }
 
 

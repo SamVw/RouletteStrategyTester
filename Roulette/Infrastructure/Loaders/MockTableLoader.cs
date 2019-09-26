@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Roulette.Core.Factories;
+using Roulette.Core.Game.Table;
 using Roulette.Core.Game.Table.Pockets;
 using Roulette.Core.Interfaces;
 
@@ -8,7 +9,7 @@ namespace Roulette.Infrastructure.Loaders
 {
     public class MockTableLoader : ITableLoader
     {
-        public List<Pocket> Load(string path)
+        public RouletteTable Load(string path)
         {
             var pockets = new List<Pocket>();
 
@@ -37,7 +38,7 @@ namespace Roulette.Infrastructure.Loaders
                 pockets.Add(PocketFactory.Create(type));
             }
 
-            return pockets;
+            return new RouletteTable(pockets);
         }
     }
 }
