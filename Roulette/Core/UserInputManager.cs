@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Resources;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Roulette.Core.Factories;
 using Roulette.Core.Interfaces;
 using Roulette.Infrastructure.Logging;
 
@@ -15,7 +19,7 @@ namespace Roulette.Core
 
         public UserInputManager(ILogger logger, IInputReader reader)
         {
-            this._logger = logger;
+            _logger = logger;
             _reader = reader;
         }
 
@@ -33,54 +37,141 @@ namespace Roulette.Core
 
         public int StartBet { get; private set; }
 
-        public void InterpretArguments(string[] args)
+        public void RequestConfigurationData()
         {
-            if (args.Length < 5)
-            {
-                HandleInvalidArguments("Provide at least 5 arguments");
-            }
+            Reset();
+            _logger.Clear();
 
-            Name = args[0];
-            Strategy = args[1];
-            bool test = int.TryParse(args[2], out int cycles);
-            if (!test || cycles >= 1000)
-            {
-                HandleInvalidArguments("Provide a valid number of cycles < 1000");
-            }
-            Cycles = cycles;
+            SetPlayerName();
 
-            test = int.TryParse(args[3], out int budget);
-            bool test2 = int.TryParse(args[4], out int startBet);
-            if ((!test || !test2) || startBet > budget || startBet < MinimumBid)
-            {
-                HandleInvalidArguments("Provide a valid budget and startBet for the strategy. startBet < budget && startBet < minBid");
-            }
-            Budget = budget;
-            StartBet = startBet;
+            SetBudget();
 
-            if (args.Length == 7)
-            {
-                test = int.TryParse(args[5], out int tableMinimum);
-                test2 = int.TryParse(args[6], out int tableMaximum);
-                if ((!test || !test2) || tableMinimum > tableMaximum)
-                {
-                    HandleInvalidArguments("Provide a valid min and max value for bets. min < max");
-                }
-                MinimumBid = tableMinimum;
-                MaximumBid = tableMaximum;
-            }
+            SetTableLimits();
+
+            SetStrategy();
+
+            SetCycles();
+
+            SetStartBet();
+
+            _logger.Clear();
         }
 
-        public bool RestartStrategy()
+        private void Reset()
         {
-            _logger.Log("Run strategy again? (y or n):");
+            Name = null;
+            Strategy = null;
+            Cycles = 0;
+            MinimumBid = null;
+            MaximumBid = null;
+            Budget = 0;
+            StartBet = 0;
+        }
+
+        public bool ShowModal(string message, string acceptText, string denyText)
+        {
+            _logger.Log(message);
             string answer = _reader.Read();
-            if (answer == "n")
+            if (answer == denyText)
             {
                 return false;
             }
 
             return true;
+        }
+
+        private void SetBudget()
+        {
+            Budget = Request<int>("Player budget: ");
+        }
+
+        private void SetCycles()
+        {
+            do
+            {
+                Cycles = Request<int>("Cycles ( < 1000 ): ");
+            } while (Cycles >= 1000);
+        }
+
+        private void SetStartBet()
+        {
+            do
+            {
+                StartBet = Request<int>("Start bet: ");
+            } while (MinimumBid != null && StartBet < MinimumBid);
+        }
+
+        private T Request<T>(string message)
+        {
+            bool valid;
+            T budget = default;
+            do
+            {
+                _logger.Log(message);
+                var input = _reader.Read();
+                try
+                {
+                    var converter = TypeDescriptor.GetConverter(typeof(T));
+                    if (converter != null)
+                    {
+                        // Cast ConvertFromString(string text) : object to (T)
+                        budget = (T)converter.ConvertFromString(input);
+                    }
+                    valid = true;
+                }
+                catch (Exception)
+                {
+                    valid = false;
+                }
+            } while (!valid);
+
+            return budget;
+        }
+
+        private void SetStrategy()
+        {
+            var input = "";
+            do
+            {
+                _logger.Log("Strategy Martingale(default) | Waiting | 1-3-2-6 | Cancellation : ");
+                input = _reader.Read();
+            } while (!ValidateStrategy(input));
+
+            Strategy = input == "" ? "Martingale" : input;
+        }
+
+        public static bool ValidateStrategy(string input)
+        {
+            var strategies = new List<string>() { "", "Martingale", "Waiting", "1-3-2-6", "Cancellation" };
+
+            return strategies.Contains(input);
+        }
+
+        private void SetPlayerName()
+        {
+            _logger.Log("Player name (default: test): ");
+            var input = _reader.Read();
+
+            Name = input == "" ? "test" : input;
+        }
+
+        private void SetTableLimits()
+        {
+            var limits = ShowModal("Table has minimum and maximum bid? (y or n)", "y", "n");
+            if (limits)
+            {
+                do
+                {
+                    if (MinimumBid >= MaximumBid)
+                    {
+                        _logger.Clear();
+                        _logger.Log("Minimum bid must be lower then Maximum bid!");
+                    }
+
+                    MinimumBid = Request<int>("Minimum bid: ");
+                    MaximumBid = Request<int>("Maximum bid: ");
+                } while (MinimumBid >= MaximumBid);
+            }
         }
 
         private void HandleInvalidArguments(string extra)

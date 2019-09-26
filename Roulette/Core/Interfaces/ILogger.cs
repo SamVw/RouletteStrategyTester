@@ -9,5 +9,6 @@ namespace Roulette.Core.Interfaces
     public interface ILogger
     {
         void Log(object output);
+        void Clear();
     }
 }

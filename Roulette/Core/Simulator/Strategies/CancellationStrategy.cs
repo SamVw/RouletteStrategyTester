@@ -20,7 +20,6 @@ namespace Roulette.Core.Simulator.Strategies
         public override StrategyResult Execute(RouletteGame rouletteGame, Player player, int betStartAmount)
         {
             InitSequence(betStartAmount);
-            int cyclesRan = 0;
             double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget;
             List<double> bets = new List<double>();
 
@@ -33,39 +32,51 @@ namespace Roulette.Core.Simulator.Strategies
                 }
 
                 W = _sequence.Count == 1 ? _sequence.First() : _sequence.First() + _sequence.Last();
-                
-                double result = SpinRouletteWithExceptionHandling(rouletteGame);
+
+                W = PreventImpossibleBet(player.Budget, W);
+                double result = SpinRouletteWithExceptionHandling(rouletteGame, new ColorBet(W, PocketColor.Red));
 
                 CollectStats(W, bets, ref maxBet, ref minBet);
 
-                if (result < 0)
-                {
-                    _sequence.Add(W);
-                }
-                else
-                {
-                    if (_sequence.Count != 1)
-                    {
-                        _sequence.RemoveAt(_sequence.Count - 1);
-                    }
-                    _sequence.RemoveAt(0);
-                }
+                UpdateSequenceAccordingToResult(result);
 
                 player.Budget += result;
-                cyclesRan++;
+                CyclesRan++;
+
+                if (player.IsBroke)
+                {
+                    break;
+                }
             }
 
             return new StrategyResult()
             {
                 EndBudget = player.Budget,
                 Strategy = "Cancellation",
-                CyclesRan = cyclesRan,
+                CyclesRan = CyclesRan,
                 MaxBet = maxBet,
                 MinBet = minBet,
                 AllBets = bets,
                 StartBudget = startBudget,
                 Name = player.Name
             };
+        }
+
+        private void UpdateSequenceAccordingToResult(double result)
+        {
+            if (result < 0)
+            {
+                _sequence.Add(W);
+            }
+            else
+            {
+                if (_sequence.Count != 1)
+                {
+                    _sequence.RemoveAt(_sequence.Count - 1);
+                }
+
+                _sequence.RemoveAt(0);
+            }
         }
 
         private void InitSequence(double betStartAmount)

@@ -31,28 +31,23 @@ namespace Roulette.Core
             _simulator = new RouletteStrategySimulator();
         }
 
-        public void Test(string[] args)
+        public void Run()
         {
-            try
-            {
-                _userInputManager.InterpretArguments(args);
-            }
-            catch (ArgumentException e)
-            {
-                _logger.Log(e.Message);
-                return;
-            }
-
-            _simulator.InitRouletteGame(_userInputManager.MinimumBid, _userInputManager.MaximumBid);
-
             do
             {
-                var strategy = StrategyFactory.Create(_userInputManager.Strategy, _userInputManager.Cycles);
-                var result = _simulator.ExecuteStrategy( strategy, _userInputManager.Budget, _userInputManager.StartBet, _userInputManager.Name);
-                _statisticsManager.Process(result);
-                _visualizer.ShowStatistics(_statisticsManager.GetStatistics());
-            } while (_userInputManager.RestartStrategy());
+                _userInputManager.RequestConfigurationData();
+                _simulator.InitRouletteGame(_userInputManager.MinimumBid, _userInputManager.MaximumBid);
+                _statisticsManager.Clear();
+                
+                do
+                {
+                    var strategy = StrategyFactory.Create(_userInputManager.Strategy, _userInputManager.Cycles);
+                    var result = _simulator.ExecuteStrategy( strategy, _userInputManager.Budget, _userInputManager.StartBet, _userInputManager.Name);
+                    _statisticsManager.Process(result);
+                    _visualizer.ShowStatistics(_statisticsManager.GetStatistics());
+                } while (_userInputManager.ShowModal("Run strategy again? (y or n):", "y", "n"));
 
+            } while (_userInputManager.ShowModal("Continue or quit? (Enter or q):", "Enter", "q"));
         }
     }
 }

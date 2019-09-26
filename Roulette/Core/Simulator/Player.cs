@@ -12,6 +12,8 @@ namespace Roulette.Core.Simulator
 
         public double Budget { get; set; }
 
+        public bool IsBroke => Budget <= 0;
+
         public Player(string name, double budget)
         {
             Budget = budget;

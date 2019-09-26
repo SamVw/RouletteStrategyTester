@@ -26,21 +26,18 @@ namespace Roulette.Core.Simulator.Strategies
             for (int i = 0; i < Cycles; i++)
             {
                 Bet bet = new ColorBet(W, PocketColor.Red);
-                double result = SpinRouletteWithExceptionHandling(rouletteGame);
+                W = PreventImpossibleBet(player.Budget, W);
+                double result = SpinRouletteWithExceptionHandling(rouletteGame, new ColorBet(W, PocketColor.Red));
                 player.Budget += result;
 
                 CollectStats(W, bets, ref maxBet, ref minBet);
 
-                bool loss = result < 0;
-                if (loss)
+                UpdateWagerAndStraightWinsAccordingToResult(betStartAmount, result);
+
+                CyclesRan++;
+                if (player.IsBroke)
                 {
-                    D = 0;
-                    W = betStartAmount;
-                }
-                if (!loss)
-                {
-                    D++;
-                    IncreaseWagersAccordingToStreak(betStartAmount);
+                    break;
                 }
             }
 
@@ -55,6 +52,22 @@ namespace Roulette.Core.Simulator.Strategies
                 StartBudget = startBudget,
                 Name = player.Name
             };
+        }
+
+        private void UpdateWagerAndStraightWinsAccordingToResult(int betStartAmount, double result)
+        {
+            bool loss = result < 0;
+            if (loss)
+            {
+                D = 0;
+                W = betStartAmount;
+            }
+
+            if (!loss)
+            {
+                D++;
+                IncreaseWagersAccordingToStreak(betStartAmount);
+            }
         }
 
         private void IncreaseWagersAccordingToStreak(int betStartAmount)

@@ -14,13 +14,10 @@ namespace Roulette
 {
     class Program
     {
-        static int Main(string[] args)
+        static void Main(string[] args)
         {
             var rouletteStrategyTester = CreatingServices();
-
-            rouletteStrategyTester.Test(args);
-
-            return 0;
+            rouletteStrategyTester.Run();
         }
 
         private static RouletteStrategyTester CreatingServices()

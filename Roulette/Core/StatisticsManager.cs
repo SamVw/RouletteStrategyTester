@@ -52,5 +52,10 @@ namespace Roulette.Core
         {
             return _strategyResults.Values.ToList();
         }
+
+        public void Clear()
+        {
+            _strategyResults.Clear();
+        }
     }
 }

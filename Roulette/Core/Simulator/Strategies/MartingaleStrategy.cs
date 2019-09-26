@@ -24,36 +24,48 @@ namespace Roulette.Core.Simulator.Strategies
 
             for (int i = 0; i < Cycles; i++)
             {
-                var result = SpinRouletteWithExceptionHandling(rouletteGame);
+                W =  PreventImpossibleBet(player.Budget, W);
+                var result = SpinRouletteWithExceptionHandling(rouletteGame, new ColorBet(W, PocketColor.Red));
 
                 CollectStats(W, bets, ref maxBet, ref minBet);
 
-                if (result < 0)
-                {
-                    W = W * 2;
-                    C++;
-                }
-
-                if (result > 0)
-                {
-                    C = 0;
-                    W = betStartAmount;
-                }
+                UpdateWagerAndLossesAccordingToResult(betStartAmount, result);
 
                 player.Budget += result;
+                CyclesRan++;
+
+                if (player.IsBroke)
+                {
+                    break;
+                }
             }
 
             return new StrategyResult()
             {
                 EndBudget = player.Budget,
                 Strategy = "Martingale",
-                CyclesRan = Cycles,
+                CyclesRan = CyclesRan,
                 MaxBet = maxBet,
                 MinBet = minBet,
                 AllBets = bets,
                 StartBudget = startBudget,
                 Name = player.Name
             };
+        }
+
+        private void UpdateWagerAndLossesAccordingToResult(int betStartAmount, double result)
+        {
+            if (result < 0)
+            {
+                W = W * 2;
+                C++;
+            }
+
+            if (result > 0)
+            {
+                C = 0;
+                W = betStartAmount;
+            }
         }
     }
 }

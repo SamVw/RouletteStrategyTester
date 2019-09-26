@@ -25,6 +25,8 @@ namespace Roulette.Core.Simulator.Strategies
         // Wins in a row
         protected int D;
 
+        protected int CyclesRan = 0;
+
         protected Strategy(int cycles)
         {
             Cycles = cycles;
@@ -46,29 +48,33 @@ namespace Roulette.Core.Simulator.Strategies
             }
         }
 
-        protected double SpinRouletteWithExceptionHandling(RouletteGame rouletteGame)
+        protected double SpinRouletteWithExceptionHandling(RouletteGame rouletteGame, Bet bet)
         {
             double result = 0.0;
             try
             {
-                result = rouletteGame.PlaceBetAndSpin(new ColorBet(W, PocketColor.Red));
+                result = rouletteGame.PlaceBetAndSpin(bet);
                 WPrevious = W;
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
-                if (e.Message == "max reached")
-                {
-                    result = rouletteGame.PlaceBetAndSpin(new ColorBet(WPrevious, PocketColor.Red));
-                }
-                else if (e.Message == "min reached")
-                {
-                    result = rouletteGame.PlaceBetAndSpin(new ColorBet(WPrevious, PocketColor.Red));
-                }
+                bet.Amount = WPrevious;
+                result = rouletteGame.PlaceBetAndSpin(bet);
 
                 W = WPrevious;
             }
 
             return result;
+        }
+
+        protected static int PreventImpossibleBet(double budget, int wager)
+        {
+            if (budget - wager < 0)
+            {
+                wager = int.Parse(Math.Floor(budget).ToString());
+            }
+
+            return wager;
         }
     }
 }

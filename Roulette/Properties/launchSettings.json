@@ -2,7 +2,7 @@
   "profiles": {
     "Roulette": {
       "commandName": "Project",
-      "commandLineArgs": "test Cancellation 999 100000 100"
+      "commandLineArgs": "test Waiting 999 100000 100"
     }
   }
 }

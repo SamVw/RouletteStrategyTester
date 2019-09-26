@@ -10,7 +10,7 @@
         int Budget { get; }
         int StartBet { get; }
 
-        void InterpretArguments(string[] args);
-        bool RestartStrategy();
+        void RequestConfigurationData();
+        bool ShowModal(string message, string acceptText, string denyText);
     }
 }

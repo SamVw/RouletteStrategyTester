@@ -13,5 +13,10 @@ namespace Roulette.Infrastructure.Logging
         {
             Console.WriteLine(output);
         }
+
+        public void Clear()
+        {
+            Console.Clear();
+        }
     }
 }

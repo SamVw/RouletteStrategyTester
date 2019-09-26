@@ -7,5 +7,6 @@ namespace Roulette.Core.Interfaces
     {
         void Process(StrategyResult result);
         List<StrategyStatistics> GetStatistics();
+        void Clear();
     }
 }

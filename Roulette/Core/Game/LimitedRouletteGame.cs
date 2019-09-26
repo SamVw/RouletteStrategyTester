@@ -8,12 +8,12 @@ using Roulette.Core.Interfaces;
 
 namespace Roulette.Core.Game
 {
-    public class LimitedRoulette : RouletteGame
+    public class LimitedRouletteGame : RouletteGame
     {
         private int _minBid;
         private int _maxBid;
 
-        public LimitedRoulette(IWheel wheel, ITableLoader tableLoader) : base(wheel, tableLoader)
+        public LimitedRouletteGame(IWheel wheel, ITableLoader tableLoader) : base(wheel, tableLoader)
         {
         }
 

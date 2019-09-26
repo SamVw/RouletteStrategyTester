@@ -21,7 +21,7 @@ namespace Roulette.Core.Factories
             }
             else
             {
-                var game = new LimitedRoulette(wheel, loader);
+                var game = new LimitedRouletteGame(wheel, loader);
                 game.SetLimits((int)minBet, (int)maxBet);
                 return game;
             }

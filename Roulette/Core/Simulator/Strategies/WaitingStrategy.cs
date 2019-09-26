@@ -30,27 +30,24 @@ namespace Roulette.Core.Simulator.Strategies
                 double result = 0;
                 if (redStraightWins == 7)
                 {
-                    redStraightWins = 0;
-                    lastHitColor = PocketColor.Green;
-
-                    result = SpinRouletteWithExceptionHandling(rouletteGame);
+                    redStraightWins = Handle7RedStraightWins(rouletteGame, player, out lastHitColor, out result);
                 }
                 else if (blackStraightWins == 7)
                 {
-                    blackStraightWins = 0;
-                    lastHitColor = PocketColor.Green;
-
-                    result = SpinRouletteWithExceptionHandling(rouletteGame);
+                    blackStraightWins = Handle7BlackStraightWins(rouletteGame, player, out lastHitColor, out result);
                 }
                 else
                 {
-                    result = SpinRouletteWithExceptionHandling(rouletteGame);
-
-                    lastHitColor = HandleRegularResult(betStartAmount, result, lastHitColor, ref blackStraightWins, ref redStraightWins);
+                    result = HandleNo7StraightWins(rouletteGame, player, betStartAmount, ref lastHitColor, ref blackStraightWins, ref redStraightWins);
                 }
 
                 CollectStats(W, bets, ref maxBet, ref minBet);
                 player.Budget += result;
+                CyclesRan++;
+                if (player.IsBroke)
+                {
+                    break;
+                }
             }
 
             return new StrategyResult()
@@ -64,6 +61,42 @@ namespace Roulette.Core.Simulator.Strategies
                 StartBudget = startBudget,
                 Name = player.Name
             };
+        }
+
+        private double HandleNo7StraightWins(RouletteGame rouletteGame, Player player, int betStartAmount,
+            ref PocketColor lastHitColor, ref int blackStraightWins, ref int redStraightWins)
+        {
+            double result;
+            W = PreventImpossibleBet(player.Budget, W);
+            result = SpinRouletteWithExceptionHandling(rouletteGame, new ColorBet(W, PocketColor.Red));
+
+            lastHitColor =
+                HandleRegularResult(betStartAmount, result, lastHitColor, ref blackStraightWins, ref redStraightWins);
+            return result;
+        }
+
+        private int Handle7BlackStraightWins(RouletteGame rouletteGame, Player player, out PocketColor lastHitColor,
+            out double result)
+        {
+            int blackStraightWins;
+            blackStraightWins = 0;
+            lastHitColor = PocketColor.Green;
+
+            W = PreventImpossibleBet(player.Budget, W);
+            result = SpinRouletteWithExceptionHandling(rouletteGame, new ColorBet(W, PocketColor.Red));
+            return blackStraightWins;
+        }
+
+        private int Handle7RedStraightWins(RouletteGame rouletteGame, Player player, out PocketColor lastHitColor,
+            out double result)
+        {
+            int redStraightWins;
+            redStraightWins = 0;
+            lastHitColor = PocketColor.Green;
+
+            W = PreventImpossibleBet(player.Budget, W);
+            result = SpinRouletteWithExceptionHandling(rouletteGame, new ColorBet(W, PocketColor.Black));
+            return redStraightWins;
         }
 
         private PocketColor HandleRegularResult(int betStartAmount, double result, PocketColor lastHitColor,

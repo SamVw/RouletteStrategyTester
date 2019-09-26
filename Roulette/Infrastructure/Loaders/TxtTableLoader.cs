@@ -15,6 +15,7 @@ namespace Roulette.Infrastructure.Loaders
         public RouletteTable Load(string path)
         {
             List<Pocket> pockets = new List<Pocket>();
+            Pocket.Count = -1;
 
             using (System.IO.StreamReader file = new System.IO.StreamReader(path))
             {
