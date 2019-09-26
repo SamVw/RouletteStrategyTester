@@ -11,39 +11,35 @@ namespace Roulette.Core.Simulator.Strategies
 {
     public class OneThreeTwoSixSystemStrategy : Strategy
     {
-        // wagering amount
-        private double _w;
-        // wins in a row
-        private int _d;
 
         public OneThreeTwoSixSystemStrategy(int cycles) : base(cycles)
         {
         }
 
-        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, double betStartAmount)
+        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, int betStartAmount)
         {
-            _w = betStartAmount;
-            _d = 0;
+            W = betStartAmount;
+            D = 0;
             double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget;
             List<double> bets = new List<double>();
 
             for (int i = 0; i < Cycles; i++)
             {
-                Bet bet = new ColorBet(_w, PocketColor.Red);
-                double result = rouletteGame.PlaceBetAndSpin(bet);
+                Bet bet = new ColorBet(W, PocketColor.Red);
+                double result = SpinRouletteWithExceptionHandling(rouletteGame);
                 player.Budget += result;
 
-                CollectStats(_w, bets, ref maxBet, ref minBet);
+                CollectStats(W, bets, ref maxBet, ref minBet);
 
                 bool loss = result < 0;
                 if (loss)
                 {
-                    _d = 0;
-                    _w = betStartAmount;
+                    D = 0;
+                    W = betStartAmount;
                 }
                 if (!loss)
                 {
-                    _d++;
+                    D++;
                     IncreaseWagersAccordingToStreak(betStartAmount);
                 }
             }
@@ -56,28 +52,29 @@ namespace Roulette.Core.Simulator.Strategies
                 MaxBet = maxBet,
                 MinBet = minBet,
                 AllBets = bets,
-                StartBudget = startBudget
+                StartBudget = startBudget,
+                Name = player.Name
             };
         }
 
-        private void IncreaseWagersAccordingToStreak(double betStartAmount)
+        private void IncreaseWagersAccordingToStreak(int betStartAmount)
         {
-            _w = betStartAmount;
-            if (_d == 1)
+            W = betStartAmount;
+            if (D == 1)
             {
-                _w *= 3;
+                W *= 3;
             }
-            else if (_d == 2)
+            else if (D == 2)
             {
-                _w *= 2;
+                W *= 2;
             }
-            else if (_d == 3)
+            else if (D == 3)
             {
-                _w *= 6;
+                W *= 6;
             }
-            else if (_d == 4)
+            else if (D == 4)
             {
-                _d = 0;
+                D = 0;
             }
         }
     }

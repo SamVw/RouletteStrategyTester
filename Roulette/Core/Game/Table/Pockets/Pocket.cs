@@ -4,6 +4,8 @@ namespace Roulette.Core.Game.Table.Pockets
 {
     public abstract class Pocket
     {
+        public static int Count = -1;
+
         public abstract int Number { get; set; }
 
         public abstract PocketColor Color { get; }

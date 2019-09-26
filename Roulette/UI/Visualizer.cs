@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using Roulette.Core.Interfaces;
 using Roulette.Core.Models;
 
@@ -24,7 +21,11 @@ namespace Roulette.UI
 
             foreach (var strategyStatistic in strategyStatistics)
             {
-                builder.AppendLine("Strategy: " + strategyStatistic.Strategy + " | " + strategyStatistic.Cycles + " cycles");
+                builder.AppendLine(" Player\t\t =>\t" + strategyStatistic.Name);
+                builder.AppendLine();
+                builder.AppendLine(" Strategy\t =>\t" + strategyStatistic.Strategy);
+                builder.AppendLine(" Cycles\t\t =>\t" + strategyStatistic.Cycles);
+                builder.AppendLine();
                 builder.AppendLine(" Start budget\t =>\t" + strategyStatistic.StartBudget + " dollars");
                 builder.AppendLine(" End budget\t =>\t" + strategyStatistic.EndBudget + " dollars");
                 builder.AppendLine(" Amount " + (strategyStatistic.EndBalance > 0 ? "Won" : "Lost") + "\t =>\t" + strategyStatistic.EndBalance + " dollars");

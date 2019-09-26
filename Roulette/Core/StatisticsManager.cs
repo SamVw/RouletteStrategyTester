@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Roulette.Core.Game.Bets;
+using Roulette.Core.Interfaces;
 using Roulette.Core.Models;
 
 namespace Roulette.Core
@@ -29,7 +30,8 @@ namespace Roulette.Core
                 Average = result.AllBets.Average(),
                 Median = GetMedian(result.AllBets),
                 StartBudget = result.StartBudget,
-                EndBalance = result.EndBudget - result.StartBudget
+                EndBalance = result.EndBudget - result.StartBudget,
+                Name = result.Name
             };
 
             if (!_strategyResults.ContainsKey(result.Strategy))

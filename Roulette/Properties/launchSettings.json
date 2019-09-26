@@ -2,7 +2,7 @@
   "profiles": {
     "Roulette": {
       "commandName": "Project",
-      "commandLineArgs": "test Martingale 999 10 10000 100000 100"
+      "commandLineArgs": "test Cancellation 999 100000 100"
     }
   }
 }

@@ -11,36 +11,33 @@ namespace Roulette.Core.Simulator.Strategies
 {
     public class MartingaleStrategy : Strategy
     {
-        private double _w;
-        private int _c;
-
         public MartingaleStrategy(int cycles) : base(cycles)
         {
         }
 
-        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, double betStartAmount)
+        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, int betStartAmount)
         {
-            _c = 0;
-            _w = betStartAmount;
+            C = 0;
+            W = betStartAmount;
             double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget;
             List<double> bets = new List<double>();
 
             for (int i = 0; i < Cycles; i++)
             {
-                var result = rouletteGame.PlaceBetAndSpin(new ColorBet(_w, PocketColor.Red));
+                var result = SpinRouletteWithExceptionHandling(rouletteGame);
 
-                CollectStats(_w, bets, ref maxBet, ref minBet);
+                CollectStats(W, bets, ref maxBet, ref minBet);
 
                 if (result < 0)
                 {
-                    _w = _w * 2;
-                    _c++;
+                    W = W * 2;
+                    C++;
                 }
 
                 if (result > 0)
                 {
-                    _c = 0;
-                    _w = betStartAmount;
+                    C = 0;
+                    W = betStartAmount;
                 }
 
                 player.Budget += result;
@@ -54,7 +51,8 @@ namespace Roulette.Core.Simulator.Strategies
                 MaxBet = maxBet,
                 MinBet = minBet,
                 AllBets = bets,
-                StartBudget = startBudget
+                StartBudget = startBudget,
+                Name = player.Name
             };
         }
     }

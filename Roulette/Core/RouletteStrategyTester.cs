@@ -22,13 +22,13 @@ namespace Roulette.Core
         private readonly IStatisticsManager _statisticsManager;
         private readonly ILogger _logger;
 
-        public RouletteStrategyTester(IRouletteStrategySimulator simulator, IVisualizer visualizer, IUserInputManager userInputManager, IStatisticsManager statisticsManager, ILogger logger)
+        public RouletteStrategyTester(IVisualizer visualizer, IUserInputManager userInputManager, IStatisticsManager statisticsManager, ILogger logger)
         {
-            _simulator = simulator;
             _visualizer = visualizer;
             _userInputManager = userInputManager;
             _statisticsManager = statisticsManager;
             _logger = logger;
+            _simulator = new RouletteStrategySimulator();
         }
 
         public void Test(string[] args)
@@ -43,12 +43,12 @@ namespace Roulette.Core
                 return;
             }
 
-            _simulator.UseLimitedRouletteGame(_userInputManager.MinimumBid, _userInputManager.MaximumBid);
+            _simulator.InitRouletteGame(_userInputManager.MinimumBid, _userInputManager.MaximumBid);
 
             do
             {
                 var strategy = StrategyFactory.Create(_userInputManager.Strategy, _userInputManager.Cycles);
-                var result = _simulator.ExecuteStrategy( strategy, _userInputManager.Budget, _userInputManager.StartBet);
+                var result = _simulator.ExecuteStrategy( strategy, _userInputManager.Budget, _userInputManager.StartBet, _userInputManager.Name);
                 _statisticsManager.Process(result);
                 _visualizer.ShowStatistics(_statisticsManager.GetStatistics());
             } while (_userInputManager.RestartStrategy());

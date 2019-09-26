@@ -12,9 +12,10 @@ namespace Roulette.Core.Simulator
 
         public double Budget { get; set; }
 
-        public Player(double budget)
+        public Player(string name, double budget)
         {
             Budget = budget;
+            Name = name;
         }
     }
 }

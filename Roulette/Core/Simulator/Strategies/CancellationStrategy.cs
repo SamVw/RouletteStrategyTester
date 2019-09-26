@@ -13,13 +13,11 @@ namespace Roulette.Core.Simulator.Strategies
     {
         private List<int> _sequence;
 
-        private int _w;
-
         public CancellationStrategy(int cycles) : base(cycles)
         {
         }
 
-        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, double betStartAmount)
+        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, int betStartAmount)
         {
             InitSequence(betStartAmount);
             int cyclesRan = 0;
@@ -34,14 +32,15 @@ namespace Roulette.Core.Simulator.Strategies
                     break;
                 }
 
-                _w = _sequence.Count == 1 ? _sequence.First() : _sequence.First() + _sequence.Last();
-                var result = rouletteGame.PlaceBetAndSpin(new ColorBet(_w, PocketColor.Red));
+                W = _sequence.Count == 1 ? _sequence.First() : _sequence.First() + _sequence.Last();
+                
+                double result = SpinRouletteWithExceptionHandling(rouletteGame);
 
-                CollectStats(_w, bets, ref maxBet, ref minBet);
+                CollectStats(W, bets, ref maxBet, ref minBet);
 
                 if (result < 0)
                 {
-                    _sequence.Add(_w);
+                    _sequence.Add(W);
                 }
                 else
                 {
@@ -64,7 +63,8 @@ namespace Roulette.Core.Simulator.Strategies
                 MaxBet = maxBet,
                 MinBet = minBet,
                 AllBets = bets,
-                StartBudget = startBudget
+                StartBudget = startBudget,
+                Name = player.Name
             };
         }
 

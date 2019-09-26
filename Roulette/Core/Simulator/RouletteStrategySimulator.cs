@@ -1,4 +1,6 @@
-﻿using Roulette.Core.Game;
+﻿using Roulette.Core.Factories;
+using Roulette.Core.Game;
+using Roulette.Core.Interfaces;
 using Roulette.Core.Models;
 using Roulette.Core.Simulator.Strategies;
 using Roulette.Infrastructure.Loaders;
@@ -9,23 +11,17 @@ namespace Roulette.Core.Simulator
     {
         private Player _player;
 
-        private LimitedRoulette _rouletteGame;
+        private RouletteGame _rouletteGame;
 
-        public StrategyResult ExecuteStrategy(Strategy strategy, double budget, double betStartAmount)
+        public StrategyResult ExecuteStrategy(Strategy strategy, double budget, int betStartAmount, string name)
         {
-            _player = new Player(budget);
+            _player = new Player(name, budget);
             return strategy.Execute(_rouletteGame, _player, betStartAmount);
         }
 
-        public void UseLimitedRouletteGame(int min, int max)
+        public void InitRouletteGame(int? minimumBid, int? maximumBid)
         {
-            UseRouletteGame();
-            _rouletteGame.SetLimits(min, max);
-        }
-
-        public void UseRouletteGame()
-        {
-            _rouletteGame = new LimitedRoulette(new Wheel(), new MockTableLoader());
+            _rouletteGame = RouletteGameFactory.Create(minimumBid, maximumBid);
         }
     }
 }

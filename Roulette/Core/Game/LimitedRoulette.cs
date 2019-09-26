@@ -21,11 +21,11 @@ namespace Roulette.Core.Game
         {
             if (b.Amount > _maxBid)
             {
-                b.Amount = _maxBid + 0.0;
+                throw new ArgumentException("max reached");
             }
-            if (b.Amount <= _minBid)
+            if (b.Amount < _minBid)
             {
-                b.Amount = _minBid;
+                throw new ArgumentException("min reached");
             }
 
             return base.PlaceBetAndSpin(b);

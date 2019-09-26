@@ -16,24 +16,23 @@ namespace Roulette
     {
         static int Main(string[] args)
         {
-            CreatingServices(out var rouletteStrategyTester);
+            var rouletteStrategyTester = CreatingServices();
 
             rouletteStrategyTester.Test(args);
 
             return 0;
         }
 
-        private static void CreatingServices(out RouletteStrategyTester rouletteStrategyTester)
+        private static RouletteStrategyTester CreatingServices()
         {
             ConsoleLogger logger = new ConsoleLogger();
             ConsoleReader reader = new ConsoleReader();
 
-            RouletteStrategySimulator simulator = new RouletteStrategySimulator();
             UserInputManager userInputManager = new UserInputManager(logger, reader);
             StatisticsManager statisticsManager = new StatisticsManager();
             Visualizer visualizer = new Visualizer(logger);
 
-            rouletteStrategyTester = new RouletteStrategyTester(simulator, visualizer, userInputManager, statisticsManager, logger);
+            return new RouletteStrategyTester(visualizer, userInputManager, statisticsManager, logger);
         }
     }
 }

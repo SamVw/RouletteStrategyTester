@@ -14,7 +14,7 @@ namespace Roulette.Core.Game
 
         private RouletteTable _rouletteTable;
 
-        protected RouletteGame(IWheel wheel, ITableLoader tableLoader)
+        public RouletteGame(IWheel wheel, ITableLoader tableLoader)
         {
             _wheel = wheel;
             _tableLoader = tableLoader;
@@ -24,7 +24,7 @@ namespace Roulette.Core.Game
 
         public void LoadTable()
         {
-            List<Pocket> pockets = _tableLoader.Load();
+            List<Pocket> pockets = _tableLoader.Load(@"./Assets/RouletteTable.txt");
             _rouletteTable = new RouletteTable(pockets);
         }
 

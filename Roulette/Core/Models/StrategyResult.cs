@@ -21,5 +21,7 @@ namespace Roulette.Core.Models
         public List<double> AllBets { get; set; }
 
         public double StartBudget { get; set; }
+
+        public string Name { get; set; }
     }
 }

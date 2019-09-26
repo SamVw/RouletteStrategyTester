@@ -11,19 +11,14 @@ namespace Roulette.Core.Simulator.Strategies
 {
     public class WaitingStrategy : Strategy
     {
-        // Amount of losses in a row
-        private int _c;
-        // Wager amount
-        private double _w;
-
         public WaitingStrategy(int cycles) : base(cycles)
         {
         }
 
-        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, double betStartAmount)
+        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, int betStartAmount)
         {
-            _c = 0;
-            _w = betStartAmount;
+            C = 0;
+            W = betStartAmount;
             double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget;
             List<double> bets = new List<double>();
 
@@ -38,23 +33,23 @@ namespace Roulette.Core.Simulator.Strategies
                     redStraightWins = 0;
                     lastHitColor = PocketColor.Green;
 
-                    result = rouletteGame.PlaceBetAndSpin(new ColorBet(_w, PocketColor.Black));
+                    result = SpinRouletteWithExceptionHandling(rouletteGame);
                 }
                 else if (blackStraightWins == 7)
                 {
                     blackStraightWins = 0;
                     lastHitColor = PocketColor.Green;
 
-                    result = rouletteGame.PlaceBetAndSpin(new ColorBet(_w, PocketColor.Red));
+                    result = SpinRouletteWithExceptionHandling(rouletteGame);
                 }
                 else
                 {
-                    result = rouletteGame.PlaceBetAndSpin(new ColorBet(_w, PocketColor.Red));
+                    result = SpinRouletteWithExceptionHandling(rouletteGame);
 
                     lastHitColor = HandleRegularResult(betStartAmount, result, lastHitColor, ref blackStraightWins, ref redStraightWins);
                 }
 
-                CollectStats(_w, bets, ref maxBet, ref minBet);
+                CollectStats(W, bets, ref maxBet, ref minBet);
                 player.Budget += result;
             }
 
@@ -66,17 +61,18 @@ namespace Roulette.Core.Simulator.Strategies
                 MaxBet = maxBet,
                 MinBet = minBet,
                 AllBets = bets,
-                StartBudget = startBudget
+                StartBudget = startBudget,
+                Name = player.Name
             };
         }
 
-        private PocketColor HandleRegularResult(double betStartAmount, double result, PocketColor lastHitColor,
+        private PocketColor HandleRegularResult(int betStartAmount, double result, PocketColor lastHitColor,
             ref int blackStraightWins, ref int redStraightWins)
         {
             if (result < 0)
             {
-                _w = _w * 2;
-                _c++;
+                W = W * 2;
+                C++;
 
                 if (lastHitColor == PocketColor.Black)
                 {
@@ -92,8 +88,8 @@ namespace Roulette.Core.Simulator.Strategies
 
             if (result > 0)
             {
-                _c = 0;
-                _w = betStartAmount;
+                C = 0;
+                W = betStartAmount;
 
                 if (lastHitColor == PocketColor.Red)
                 {

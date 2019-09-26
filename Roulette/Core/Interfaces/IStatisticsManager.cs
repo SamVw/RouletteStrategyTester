@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Roulette.Core.Models;
 
-namespace Roulette.Core
+namespace Roulette.Core.Interfaces
 {
     public interface IStatisticsManager
     {

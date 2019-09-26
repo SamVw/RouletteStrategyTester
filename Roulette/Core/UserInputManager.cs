@@ -25,9 +25,9 @@ namespace Roulette.Core
 
         public int Cycles { get; private set; }
 
-        public int MinimumBid { get; private set; }
+        public int? MinimumBid { get; private set; }
 
-        public int MaximumBid { get; private set; }
+        public int? MaximumBid { get; private set; }
 
         public int Budget { get; private set; }
 
@@ -35,9 +35,9 @@ namespace Roulette.Core
 
         public void InterpretArguments(string[] args)
         {
-            if (args.Length < 7)
+            if (args.Length < 5)
             {
-                HandleInvalidArguments("Provide at least 7 arguments");
+                HandleInvalidArguments("Provide at least 5 arguments");
             }
 
             Name = args[0];
@@ -49,23 +49,26 @@ namespace Roulette.Core
             }
             Cycles = cycles;
 
-            test = int.TryParse(args[3], out int tableMinimum);
-            bool test2 = int.TryParse(args[4], out int tableMaximum);
-            if ((!test || !test2) || tableMinimum > tableMaximum)
-            {
-                HandleInvalidArguments("Provide a valid min and max value for bets. min < max");
-            }
-            MinimumBid = tableMinimum;
-            MaximumBid = tableMaximum;
-
-            test = int.TryParse(args[5], out int budget);
-            test2 = int.TryParse(args[6], out int startBet);
+            test = int.TryParse(args[3], out int budget);
+            bool test2 = int.TryParse(args[4], out int startBet);
             if ((!test || !test2) || startBet > budget || startBet < MinimumBid)
             {
                 HandleInvalidArguments("Provide a valid budget and startBet for the strategy. startBet < budget && startBet < minBid");
             }
             Budget = budget;
             StartBet = startBet;
+
+            if (args.Length == 7)
+            {
+                test = int.TryParse(args[5], out int tableMinimum);
+                test2 = int.TryParse(args[6], out int tableMaximum);
+                if ((!test || !test2) || tableMinimum > tableMaximum)
+                {
+                    HandleInvalidArguments("Provide a valid min and max value for bets. min < max");
+                }
+                MinimumBid = tableMinimum;
+                MaximumBid = tableMaximum;
+            }
         }
 
         public bool RestartStrategy()
@@ -83,7 +86,7 @@ namespace Roulette.Core
         private void HandleInvalidArguments(string extra)
         {
             _logger.Log(extra);
-            _logger.Log("Usage: Roulette <PlayerName> <BettingStrategy> <NumberOfCycles> <TableMinimum> <TableMaximum> <budget> <startBet>");
+            _logger.Log("Usage: Roulette <PlayerName> <BettingStrategy> <NumberOfCycles> <budget> <startBet> <TableMinimum = optional> <TableMaximum = optional>");
             throw new ArgumentException("");
         }
     }
