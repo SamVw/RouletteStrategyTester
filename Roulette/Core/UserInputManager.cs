@@ -135,14 +135,14 @@ namespace Roulette.Core
             {
                 _logger.Log("Strategy Martingale(default) | Waiting | 1-3-2-6 | Cancellation : ");
                 input = _reader.Read();
-            } while (!ValidateStrategy(input));
+            } while (!ValidateStrategy(input) && input != "");
 
             Strategy = input == "" ? "Martingale" : input;
         }
 
         public static bool ValidateStrategy(string input)
         {
-            var strategies = new List<string>() { "", "Martingale", "Waiting", "1-3-2-6", "Cancellation" };
+            var strategies = new List<string>() { "Martingale", "Waiting", "1-3-2-6", "Cancellation" };
 
             return strategies.Contains(input);
         }

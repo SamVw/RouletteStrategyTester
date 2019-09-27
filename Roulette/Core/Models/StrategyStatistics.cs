@@ -27,5 +27,9 @@ namespace Roulette.Core.Models
         public double EndBalance { get; set; }
 
         public string Name { get; set; }
+
+        public double MinBudget { get; set; }
+
+        public double MaxBudget { get; set; }
     }
 }

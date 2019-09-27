@@ -34,17 +34,26 @@ namespace Roulette.Core.Simulator.Strategies
 
         public abstract StrategyResult Execute(RouletteGame rouletteGame, Player player, int betStartAmount);
 
-        protected void CollectStats(double bet, List<double> bets, ref double maxBet, ref double minBet)
+        protected void CollectStats(double bet, List<double> bets, ref double maxBet, ref double minBet, ref double minBudget, ref double maxBudget, double budget)
         {
             bets.Add(bet);
             if (bet > maxBet)
             {
                 maxBet = bet;
             }
-
             if (bet < minBet)
             {
                 minBet = bet;
+            }
+
+            if (budget < minBudget)
+            {
+                minBudget = budget;
+            }
+
+            if (budget > maxBudget)
+            {
+                maxBudget = budget;
             }
         }
 

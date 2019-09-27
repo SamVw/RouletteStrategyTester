@@ -30,6 +30,9 @@ namespace Roulette.UI
                 builder.AppendLine(" End budget\t =>\t" + strategyStatistic.EndBudget + " dollars");
                 builder.AppendLine(" Amount " + (strategyStatistic.EndBalance > 0 ? "Won" : "Lost") + "\t =>\t" + strategyStatistic.EndBalance + " dollars");
                 builder.AppendLine();
+                builder.AppendLine(" Max budget\t =>\t" + strategyStatistic.MaxBudget);
+                builder.AppendLine(" Min budget\t =>\t" + strategyStatistic.MinBudget);
+                builder.AppendLine();
                 builder.AppendLine(" Max bet\t =>\t" + strategyStatistic.MaxBet);
                 builder.AppendLine(" Min bet\t =>\t" + strategyStatistic.MinBet);
                 builder.AppendLine();

@@ -19,7 +19,7 @@ namespace Roulette.Core.Simulator.Strategies
         {
             C = 0;
             W = betStartAmount;
-            double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget;
+            double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget, minBudget = player.Budget, maxBudget = player.Budget;
             List<double> bets = new List<double>();
 
             int redStraightWins = 0, blackStraightWins = 0;
@@ -41,9 +41,10 @@ namespace Roulette.Core.Simulator.Strategies
                     result = HandleNo7StraightWins(rouletteGame, player, betStartAmount, ref lastHitColor, ref blackStraightWins, ref redStraightWins);
                 }
 
-                CollectStats(W, bets, ref maxBet, ref minBet);
                 player.Budget += result;
                 CyclesRan++;
+                CollectStats(W, bets, ref maxBet, ref minBet, ref minBudget, ref maxBudget, player.Budget);
+
                 if (player.IsBroke)
                 {
                     break;
@@ -59,7 +60,9 @@ namespace Roulette.Core.Simulator.Strategies
                 MinBet = minBet,
                 AllBets = bets,
                 StartBudget = startBudget,
-                Name = player.Name
+                Name = player.Name,
+                MaxBudget = maxBudget,
+                MinBudget = minBudget
             };
         }
 

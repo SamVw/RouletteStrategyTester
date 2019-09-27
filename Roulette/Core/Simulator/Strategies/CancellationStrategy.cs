@@ -20,7 +20,7 @@ namespace Roulette.Core.Simulator.Strategies
         public override StrategyResult Execute(RouletteGame rouletteGame, Player player, int betStartAmount)
         {
             InitSequence(betStartAmount);
-            double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget;
+            double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget, minBudget = player.Budget, maxBudget = player.Budget;
             List<double> bets = new List<double>();
 
             for (int i = 0; i < Cycles; i++)
@@ -36,12 +36,11 @@ namespace Roulette.Core.Simulator.Strategies
                 W = PreventImpossibleBet(player.Budget, W);
                 double result = SpinRouletteWithExceptionHandling(rouletteGame, new ColorBet(W, PocketColor.Red));
 
-                CollectStats(W, bets, ref maxBet, ref minBet);
-
                 UpdateSequenceAccordingToResult(result);
 
                 player.Budget += result;
                 CyclesRan++;
+                CollectStats(W, bets, ref maxBet, ref minBet, ref minBudget, ref maxBudget, player.Budget);
 
                 if (player.IsBroke)
                 {
@@ -58,7 +57,9 @@ namespace Roulette.Core.Simulator.Strategies
                 MinBet = minBet,
                 AllBets = bets,
                 StartBudget = startBudget,
-                Name = player.Name
+                Name = player.Name,
+                MaxBudget = maxBudget,
+                MinBudget = minBudget
             };
         }
 

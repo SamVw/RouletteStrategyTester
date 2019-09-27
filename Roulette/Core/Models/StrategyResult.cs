@@ -23,5 +23,9 @@ namespace Roulette.Core.Models
         public double StartBudget { get; set; }
 
         public string Name { get; set; }
+
+        public double MaxBudget { get; set; }
+
+        public double MinBudget { get; set; }
     }
 }

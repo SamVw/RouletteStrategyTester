@@ -31,7 +31,9 @@ namespace Roulette.Core
                 Median = GetMedian(result.AllBets),
                 StartBudget = result.StartBudget,
                 EndBalance = result.EndBudget - result.StartBudget,
-                Name = result.Name
+                Name = result.Name,
+                MinBudget = result.MinBudget,
+                MaxBudget = result.MaxBudget
             };
 
             if (!_strategyResults.ContainsKey(result.Strategy))
