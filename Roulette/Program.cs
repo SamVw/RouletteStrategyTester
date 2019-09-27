@@ -14,13 +14,13 @@ namespace Roulette
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            var rouletteStrategyTester = CreatingServices();
+            var rouletteStrategyTester = CreateServices();
             rouletteStrategyTester.Run();
         }
 
-        private static RouletteStrategyTester CreatingServices()
+        private static RouletteStrategyTester CreateServices()
         {
             ConsoleLogger logger = new ConsoleLogger();
             ConsoleReader reader = new ConsoleReader();
@@ -29,7 +29,7 @@ namespace Roulette
             StatisticsManager statisticsManager = new StatisticsManager();
             Visualizer visualizer = new Visualizer(logger);
 
-            return new RouletteStrategyTester(visualizer, userInputManager, statisticsManager, logger);
+            return new RouletteStrategyTester(visualizer, userInputManager, statisticsManager);
         }
     }
 }

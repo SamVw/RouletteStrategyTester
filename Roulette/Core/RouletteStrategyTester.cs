@@ -20,14 +20,12 @@ namespace Roulette.Core
         private readonly IVisualizer _visualizer;
         private readonly IUserInputManager _userInputManager;
         private readonly IStatisticsManager _statisticsManager;
-        private readonly ILogger _logger;
 
-        public RouletteStrategyTester(IVisualizer visualizer, IUserInputManager userInputManager, IStatisticsManager statisticsManager, ILogger logger)
+        public RouletteStrategyTester(IVisualizer visualizer, IUserInputManager userInputManager, IStatisticsManager statisticsManager)
         {
             _visualizer = visualizer;
             _userInputManager = userInputManager;
             _statisticsManager = statisticsManager;
-            _logger = logger;
             _simulator = new RouletteStrategySimulator();
         }
 
@@ -41,8 +39,8 @@ namespace Roulette.Core
                 
                 do
                 {
-                    var strategy = StrategyFactory.Create(_userInputManager.Strategy, _userInputManager.Cycles);
-                    var result = _simulator.ExecuteStrategy( strategy, _userInputManager.Budget, _userInputManager.StartBet, _userInputManager.Name);
+                    var strategy = StrategyFactory.Create(_userInputManager.Strategy, _userInputManager.Cycles, new Player(_userInputManager.Name, _userInputManager.Budget));
+                    var result = _simulator.ExecuteStrategy( strategy, _userInputManager.StartBet);
                     _statisticsManager.Process(result);
                     _visualizer.ShowStatistics(_statisticsManager.GetStatistics());
                 } while (_userInputManager.ShowModal("Run strategy again? (y or n):", "y", "n"));

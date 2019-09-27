@@ -9,14 +9,11 @@ namespace Roulette.Core.Simulator
 {
     public class RouletteStrategySimulator : IRouletteStrategySimulator
     {
-        private Player _player;
-
         private RouletteGame _rouletteGame;
 
-        public StrategyResult ExecuteStrategy(Strategy strategy, double budget, int betStartAmount, string name)
+        public StrategyResult ExecuteStrategy(Strategy strategy, int betStartAmount)
         {
-            _player = new Player(name, budget);
-            return strategy.Execute(_rouletteGame, _player, betStartAmount);
+            return strategy.Execute(_rouletteGame, betStartAmount);
         }
 
         public void InitRouletteGame(int? minimumBid, int? maximumBid)

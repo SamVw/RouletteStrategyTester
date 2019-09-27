@@ -11,15 +11,19 @@ namespace Roulette.Core.Simulator.Strategies
 {
     public class WaitingStrategy : Strategy
     {
-        public WaitingStrategy(int cycles) : base(cycles)
+        public WaitingStrategy(int cycles, Player player) : base(cycles, player)
         {
         }
 
-        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, int betStartAmount)
+        public override StrategyResult Execute(RouletteGame rouletteGame, int betStartAmount)
         {
             C = 0;
             W = betStartAmount;
-            double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget, minBudget = player.Budget, maxBudget = player.Budget;
+            double minBet = betStartAmount,
+                maxBet = betStartAmount,
+                startBudget = Player.Budget,
+                minBudget = Player.Budget,
+                maxBudget = Player.Budget;
             List<double> bets = new List<double>();
 
             int redStraightWins = 0, blackStraightWins = 0;
@@ -30,22 +34,22 @@ namespace Roulette.Core.Simulator.Strategies
                 double result = 0;
                 if (redStraightWins == 7)
                 {
-                    redStraightWins = Handle7RedStraightWins(rouletteGame, player, out lastHitColor, out result);
+                    redStraightWins = Handle7RedStraightWins(rouletteGame, Player, out lastHitColor, out result);
                 }
                 else if (blackStraightWins == 7)
                 {
-                    blackStraightWins = Handle7BlackStraightWins(rouletteGame, player, out lastHitColor, out result);
+                    blackStraightWins = Handle7BlackStraightWins(rouletteGame, Player, out lastHitColor, out result);
                 }
                 else
                 {
-                    result = HandleNo7StraightWins(rouletteGame, player, betStartAmount, ref lastHitColor, ref blackStraightWins, ref redStraightWins);
+                    result = HandleNo7StraightWins(rouletteGame, Player, betStartAmount, ref lastHitColor, ref blackStraightWins, ref redStraightWins);
                 }
 
-                player.Budget += result;
+                Player.Budget += result;
                 CyclesRan++;
-                CollectStats(W, bets, ref maxBet, ref minBet, ref minBudget, ref maxBudget, player.Budget);
+                CollectStats(W, bets, ref maxBet, ref minBet, ref minBudget, ref maxBudget, Player.Budget);
 
-                if (player.IsBroke)
+                if (Player.IsBroke)
                 {
                     break;
                 }
@@ -53,14 +57,14 @@ namespace Roulette.Core.Simulator.Strategies
 
             return new StrategyResult()
             {
-                EndBudget = player.Budget,
+                EndBudget = Player.Budget,
                 Strategy = "Waiting",
                 CyclesRan = Cycles,
                 MaxBet = maxBet,
                 MinBet = minBet,
                 AllBets = bets,
                 StartBudget = startBudget,
-                Name = player.Name,
+                Name = Player.Name,
                 MaxBudget = maxBudget,
                 MinBudget = minBudget
             };
@@ -69,9 +73,8 @@ namespace Roulette.Core.Simulator.Strategies
         private double HandleNo7StraightWins(RouletteGame rouletteGame, Player player, int betStartAmount,
             ref PocketColor lastHitColor, ref int blackStraightWins, ref int redStraightWins)
         {
-            double result;
             W = PreventImpossibleBet(player.Budget, W);
-            result = SpinRouletteWithExceptionHandling(rouletteGame, new ColorBet(W, PocketColor.Red));
+            var result = SpinRouletteWithExceptionHandling(rouletteGame, new ColorBet(W, PocketColor.Red));
 
             lastHitColor =
                 HandleRegularResult(betStartAmount, result, lastHitColor, ref blackStraightWins, ref redStraightWins);
@@ -81,8 +84,7 @@ namespace Roulette.Core.Simulator.Strategies
         private int Handle7BlackStraightWins(RouletteGame rouletteGame, Player player, out PocketColor lastHitColor,
             out double result)
         {
-            int blackStraightWins;
-            blackStraightWins = 0;
+            var blackStraightWins = 0;
             lastHitColor = PocketColor.Green;
 
             W = PreventImpossibleBet(player.Budget, W);
@@ -93,8 +95,7 @@ namespace Roulette.Core.Simulator.Strategies
         private int Handle7RedStraightWins(RouletteGame rouletteGame, Player player, out PocketColor lastHitColor,
             out double result)
         {
-            int redStraightWins;
-            redStraightWins = 0;
+            var redStraightWins = 0;
             lastHitColor = PocketColor.Green;
 
             W = PreventImpossibleBet(player.Budget, W);

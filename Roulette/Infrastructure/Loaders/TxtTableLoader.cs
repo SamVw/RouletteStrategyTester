@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Roulette.Infrastructure.Loaders
             List<Pocket> pockets = new List<Pocket>();
             Pocket.Count = -1;
 
-            using (System.IO.StreamReader file = new System.IO.StreamReader(path))
+            using (StreamReader file = new StreamReader(path))
             {
                 string line;
                 while ((line = file.ReadLine()) != null)

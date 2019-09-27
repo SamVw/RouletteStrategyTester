@@ -12,30 +12,34 @@ namespace Roulette.Core.Simulator.Strategies
     public class OneThreeTwoSixSystemStrategy : Strategy
     {
 
-        public OneThreeTwoSixSystemStrategy(int cycles) : base(cycles)
+        public OneThreeTwoSixSystemStrategy(int cycles, Player player) : base(cycles, player)
         {
         }
 
-        public override StrategyResult Execute(RouletteGame rouletteGame, Player player, int betStartAmount)
+        public override StrategyResult Execute(RouletteGame rouletteGame, int betStartAmount)
         {
             W = betStartAmount;
             D = 0;
-            double minBet = betStartAmount, maxBet = betStartAmount, startBudget = player.Budget, minBudget = player.Budget, maxBudget = player.Budget;
+            double minBet = betStartAmount,
+                maxBet = betStartAmount,
+                startBudget = Player.Budget,
+                minBudget = Player.Budget,
+                maxBudget = Player.Budget;
             List<double> bets = new List<double>();
 
             for (int i = 0; i < Cycles; i++)
             {
                 Bet bet = new ColorBet(W, PocketColor.Red);
-                W = PreventImpossibleBet(player.Budget, W);
+                W = PreventImpossibleBet(Player.Budget, W);
                 double result = SpinRouletteWithExceptionHandling(rouletteGame, new ColorBet(W, PocketColor.Red));
 
                 UpdateWagerAndStraightWinsAccordingToResult(betStartAmount, result);
 
-                player.Budget += result;
+                Player.Budget += result;
                 CyclesRan++;
-                CollectStats(W, bets, ref maxBet, ref minBet, ref minBudget, ref maxBudget, player.Budget);
+                CollectStats(W, bets, ref maxBet, ref minBet, ref minBudget, ref maxBudget, Player.Budget);
 
-                if (player.IsBroke)
+                if (Player.IsBroke)
                 {
                     break;
                 }
@@ -43,14 +47,14 @@ namespace Roulette.Core.Simulator.Strategies
 
             return new StrategyResult()
             {
-                EndBudget = player.Budget,
+                EndBudget = Player.Budget,
                 Strategy = "1-3-2-6",
                 CyclesRan = Cycles,
                 MaxBet = maxBet,
                 MinBet = minBet,
                 AllBets = bets,
                 StartBudget = startBudget,
-                Name = player.Name,
+                Name = Player.Name,
                 MaxBudget = maxBudget,
                 MinBudget = minBudget
             };

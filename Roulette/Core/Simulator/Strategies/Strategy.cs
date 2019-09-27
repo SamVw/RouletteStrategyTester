@@ -12,27 +12,27 @@ namespace Roulette.Core.Simulator.Strategies
     public abstract class Strategy
     {
         protected int Cycles { get; set; }
+        protected int CyclesRan = 0;
 
         // Wager amount
         protected int W;
-
         // Previous wager amount for when rollback is required
         protected int WPrevious;
 
         // Losses in a row
         protected int C;
-
         // Wins in a row
         protected int D;
 
-        protected int CyclesRan = 0;
+        protected Player Player { get; set; }
 
-        protected Strategy(int cycles)
+        protected Strategy(int cycles, Player player)
         {
             Cycles = cycles;
+            Player = player;
         }
 
-        public abstract StrategyResult Execute(RouletteGame rouletteGame, Player player, int betStartAmount);
+        public abstract StrategyResult Execute(RouletteGame rouletteGame, int betStartAmount);
 
         protected void CollectStats(double bet, List<double> bets, ref double maxBet, ref double minBet, ref double minBudget, ref double maxBudget, double budget)
         {
